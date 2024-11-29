@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "756742385073",
+    "project_id": "social-app-chatt",
+    "storage_bucket": "social-app-chatt.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756742385073:android:8b11b304d16dd3b28d6190",
+        "android_client_info": {
+          "package_name": "com.piotrwezyk.social_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBS-97-Oxw8tuV_k4gAFS74iCpFl9E96J4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
