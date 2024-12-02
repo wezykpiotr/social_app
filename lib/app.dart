@@ -5,18 +5,28 @@ import 'package:social_app/features/authentication/presentation/cubits/auth_cubi
 import 'package:social_app/features/authentication/presentation/cubits/auth_states.dart';
 import 'package:social_app/features/authentication/presentation/pages/auth_page.dart';
 import 'package:social_app/features/home/presentation/pages/home_page.dart';
+import 'package:social_app/features/profile/data/repository/firebase_profile_repository.dart';
+import 'package:social_app/features/profile/presentation/cubits/profile_cubit.dart';
 import 'package:social_app/themes/light_mode.dart';
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
   final firebaseAuthRepository = FirebaseAuthRepository();
+  final profileRepository = FirebaseProfileRepository();
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthCubit(
-        firebaseAuthRepository: firebaseAuthRepository,
-      )..checkAuth(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthCubit>(
+          create: (context) =>
+              AuthCubit(firebaseAuthRepository: firebaseAuthRepository)
+                ..checkAuth(),
+        ),
+        BlocProvider<ProfileCubit>(
+            create: (context) =>
+                ProfileCubit(profileRepository: profileRepository))
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightMode,
