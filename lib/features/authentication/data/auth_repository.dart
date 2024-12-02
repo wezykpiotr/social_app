@@ -32,7 +32,7 @@ class FirebaseAuthRepository {
           AppUser(uid: userCredential.user!.uid, email: email, name: name);
 
       await firebaseFirestore
-          .collection('user')
+          .collection('users')
           .doc(appUser.uid)
           .set(appUser.toJson());
       return appUser;
