@@ -7,13 +7,15 @@ import 'package:social_app/features/authentication/presentation/pages/auth_page.
 import 'package:social_app/features/home/presentation/pages/home_page.dart';
 import 'package:social_app/features/profile/data/repository/firebase_profile_repository.dart';
 import 'package:social_app/features/profile/presentation/cubits/profile_cubit.dart';
+import 'package:social_app/features/storage/data/firebase_storage_repository.dart';
 import 'package:social_app/themes/light_mode.dart';
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
   final firebaseAuthRepository = FirebaseAuthRepository();
-  final profileRepository = FirebaseProfileRepository();
+  final firebaseProfileRepository = FirebaseProfileRepository();
+  final firebaseStorageRepository = FirebaseStorageRepository();
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -24,8 +26,9 @@ class MyApp extends StatelessWidget {
                 ..checkAuth(),
         ),
         BlocProvider<ProfileCubit>(
-            create: (context) =>
-                ProfileCubit(profileRepository: profileRepository))
+            create: (context) => ProfileCubit(
+                profileRepository: firebaseProfileRepository,
+                firebaseStorageRepository: firebaseStorageRepository))
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
