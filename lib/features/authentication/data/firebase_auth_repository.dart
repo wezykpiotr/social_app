@@ -12,8 +12,15 @@ class FirebaseAuthRepository {
     try {
       UserCredential userCredential = await firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
-      AppUser appUser =
-          AppUser(uid: userCredential.user!.uid, email: email, name: '');
+      DocumentSnapshot userDoc = await firebaseFirestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get();
+      AppUser appUser = AppUser(
+        uid: userCredential.user!.uid,
+        email: email,
+        name: userDoc['name'],
+      );
       return appUser;
     } catch (e) {
       throw Exception('Login failed: $e');
@@ -50,6 +57,15 @@ class FirebaseAuthRepository {
     if (firebaseUser == null) {
       return null;
     }
-    return AppUser(uid: firebaseUser.uid, email: firebaseUser.email!, name: '');
+    DocumentSnapshot userDoc =
+        await firebaseFirestore.collection('users').doc(firebaseUser.uid).get();
+
+    if (!userDoc.exists) {
+      return null;
+    }
+    return AppUser(
+        uid: firebaseUser.uid,
+        email: firebaseUser.email!,
+        name: userDoc['name']);
   }
 }

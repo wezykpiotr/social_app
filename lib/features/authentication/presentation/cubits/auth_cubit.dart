@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_app/features/authentication/data/auth_repository.dart';
+import 'package:social_app/features/authentication/data/firebase_auth_repository.dart';
 import 'package:social_app/features/authentication/domain/app_user.dart';
 import 'package:social_app/features/authentication/presentation/cubits/auth_states.dart';
 
