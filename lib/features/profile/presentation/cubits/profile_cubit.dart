@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app/features/profile/data/repository/profile_repository.dart';
+import 'package:social_app/features/profile/domain/entities/profile_user.dart';
 import 'package:social_app/features/profile/presentation/cubits/profile_states.dart';
 import 'package:social_app/features/storage/data/firebase_storage_repository.dart';
 
@@ -31,6 +32,11 @@ class ProfileCubit extends Cubit<ProfileStates> {
         e.toString(),
       );
     }
+  }
+
+  Future<ProfileUser?> getUserProfile(String uid) async  {
+    final user = await profileRepository.fetchUserProfile(uid);
+    return user;
   }
 
   Future<void> updateProfile({
