@@ -68,8 +68,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
     );
     final postCubit = context.read<PostCubit>();
 
-    print(newPost.text +
-        '444444444444444444444444444444444444444444444444444444444');
+   
 
     if (kIsWeb) {
       postCubit.createPost(newPost, imageBytes: imagePickedFile?.bytes);
@@ -87,7 +86,6 @@ class _UploadPostPageState extends State<UploadPostPage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PostCubit, PostStates>(builder: (context, state) {
-      print(state);
       if (state is PostsLoading || state is PostsUploading) {
         return Scaffold(
           body: Center(

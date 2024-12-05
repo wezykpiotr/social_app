@@ -29,7 +29,7 @@ class FirebasePostRepository implements PostRepository {
       final List<Post> allPosts = postsSnapshot.docs
           .map((doc) => Post.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
-      
+
       return allPosts;
     } catch (e) {
       throw Exception('Error fetching posts: $e');
