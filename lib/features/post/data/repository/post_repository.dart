@@ -5,4 +5,5 @@ abstract class PostRepository {
   Future<void> createPost(Post post);
   Future<void> deletePost(String postId);
   Future<List<Post>> fetchPostByUserId(String userId);
+  Future<void> toggleLikesPost(String postId, String userId);
 }

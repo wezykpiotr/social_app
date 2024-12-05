@@ -55,4 +55,12 @@ class PostCubit extends Cubit<PostStates> {
   Future<void> deletePost(String postId) async {
     await postRepository.deletePost(postId);
   }
+
+  Future<void> toggleLikesPost(String postId, String userId) async {
+    try {
+      await postRepository.toggleLikesPost(postId, userId);
+    } catch (e) {
+      emit(PostsError(e.toString()));
+    }
+  }
 }

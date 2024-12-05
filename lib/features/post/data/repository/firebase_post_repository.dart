@@ -49,4 +49,27 @@ class FirebasePostRepository implements PostRepository {
       throw Exception('Error fetching posts by user: $e');
     }
   }
+
+  @override
+  Future<void> toggleLikesPost(String postId, String userId) async {
+    try {
+      final postDoc = await postsCollection.doc(postId).get();
+      if (postDoc.exists) {
+        final post = Post.fromJson(postDoc.data() as Map<String, dynamic>);
+        final hasLiked = post.likes.contains(userId);
+        if (hasLiked) {
+          post.likes.remove(userId);
+        } else {
+          post.likes.add(userId);
+        }
+        await postsCollection.doc(postId).update({
+          'likes': post.likes,
+        });
+      } else {
+        throw Exception('Post not found');
+      }
+    } catch (e) {
+      throw Exception('Error toggling likes $e');
+    }
+  }
 }
