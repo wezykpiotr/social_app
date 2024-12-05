@@ -52,7 +52,6 @@ class _HomePageState extends State<HomePage> {
               child: CircularProgressIndicator(),
             );
           } else if (state is PostsLoaded) {
-            
             final allPosts = state.posts;
             if (allPosts.isEmpty) {
               return const Center(
