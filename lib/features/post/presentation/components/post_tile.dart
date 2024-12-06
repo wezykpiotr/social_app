@@ -7,6 +7,7 @@ import 'package:social_app/features/authentication/presentation/cubits/auth_cubi
 import 'package:social_app/features/post/domain/entities/comment.dart';
 import 'package:social_app/features/post/domain/entities/post.dart';
 import 'package:social_app/features/post/presentation/cubits/post_cubit.dart';
+import 'package:social_app/features/post/presentation/cubits/post_states.dart';
 import 'package:social_app/features/profile/domain/entities/profile_user.dart';
 import 'package:social_app/features/profile/presentation/cubits/profile_cubit.dart';
 
@@ -239,16 +240,78 @@ class _PostTileState extends State<PostTile> {
                 ),
                 const SizedBox(width: 20),
                 GestureDetector(
-                    onTap: openNewCommentBox,
-                    child: Icon(
-                      Icons.comment,
-                    )),
-                Text(widget.post.comments.length.toString()),
+                  onTap: openNewCommentBox,
+                  child: Icon(
+                    Icons.comment,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  widget.post.comments.length.toString(),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 12,
+                  ),
+                ),
                 const Spacer(),
                 Text(widget.post.timestamp.toString()),
               ],
             ),
           ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+            child: Row(
+              children: [
+                Text(
+                  widget.post.userName,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Text(widget.post.text),
+              ],
+            ),
+          ),
+          BlocBuilder<PostCubit,PostStates>(builder: (context, state) {
+            if (state is PostsLoaded) {
+              final post =
+                  state.posts.firstWhere((post) => post.id == widget.post.id);
+              if (post.comments.isNotEmpty) {
+                int showCommentCount = post.comments.length;
+                return ListView.builder(
+                    itemCount: showCommentCount,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final comment = post.comments[index];
+                      return Row(
+                        children: [
+                          Text(comment.userName),
+                          Text(comment.text),
+                        ],
+                      );
+                    });
+              }
+            }
+            if (state is PostsLoading) {
+              return const CircularProgressIndicator();
+            } else if (state is PostsError) {
+              return Center(
+                child: Text(state.message),
+              );
+            } else {
+              return Center(
+                child: Text('Something went wrong'),
+              );
+            }
+          }),
         ],
       ),
     );
