@@ -6,10 +6,12 @@ import 'package:social_app/features/authentication/presentation/components/my_te
 import 'package:social_app/features/authentication/presentation/cubits/auth_cubit.dart';
 import 'package:social_app/features/post/domain/entities/comment.dart';
 import 'package:social_app/features/post/domain/entities/post.dart';
+import 'package:social_app/features/post/presentation/components/comment_tile.dart';
 import 'package:social_app/features/post/presentation/cubits/post_cubit.dart';
 import 'package:social_app/features/post/presentation/cubits/post_states.dart';
 import 'package:social_app/features/profile/domain/entities/profile_user.dart';
 import 'package:social_app/features/profile/presentation/cubits/profile_cubit.dart';
+import 'package:social_app/features/profile/presentation/pages/profile_page.dart';
 
 class PostTile extends StatefulWidget {
   const PostTile(
@@ -103,9 +105,9 @@ class _PostTileState extends State<PostTile> {
     final newComment = Comment(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       postId: widget.post.id,
-      userId: widget.post.userId,
-      userName: widget.post.userName,
-      text: widget.post.text,
+      userId: currentUser!.uid,
+      userName: currentUser!.name,
+      text: commentTextController.text,
       timestamp: DateTime.now(),
     );
     if (commentTextController.text.isNotEmpty) {
@@ -151,49 +153,59 @@ class _PostTileState extends State<PostTile> {
       color: Theme.of(context).colorScheme.secondary,
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                postUser?.profileImageUrl != null
-                    ? CachedNetworkImage(
-                        imageUrl: postUser!.profileImageUrl,
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.person),
-                        imageBuilder: (context, imageProvider) => Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
+          GestureDetector(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfilePage(
+                  uid: widget.post.userId,
+                ),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  postUser?.profileImageUrl != null
+                      ? CachedNetworkImage(
+                          imageUrl: postUser!.profileImageUrl,
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.person),
+                          imageBuilder: (context, imageProvider) => Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    : const Icon(Icons.person),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  widget.post.userName,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                    fontWeight: FontWeight.bold,
+                        )
+                      : const Icon(Icons.person),
+                  const SizedBox(
+                    width: 10,
                   ),
-                ),
-                const Spacer(),
-                if (isOwnPost)
-                  GestureDetector(
-                    onTap: showOptions,
-                    child: Icon(
-                      Icons.delete,
-                      color: Theme.of(context).colorScheme.primary,
+                  Text(
+                    widget.post.userName,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-              ],
+                  const Spacer(),
+                  if (isOwnPost)
+                    GestureDetector(
+                      onTap: showOptions,
+                      child: Icon(
+                        Icons.delete,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
           CachedNetworkImage(
@@ -273,13 +285,13 @@ class _PostTileState extends State<PostTile> {
                   ),
                 ),
                 const SizedBox(
-                  width: 20,
+                  width: 10,
                 ),
                 Text(widget.post.text),
               ],
             ),
           ),
-          BlocBuilder<PostCubit,PostStates>(builder: (context, state) {
+          BlocBuilder<PostCubit, PostStates>(builder: (context, state) {
             if (state is PostsLoaded) {
               final post =
                   state.posts.firstWhere((post) => post.id == widget.post.id);
@@ -291,16 +303,11 @@ class _PostTileState extends State<PostTile> {
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       final comment = post.comments[index];
-                      return Row(
-                        children: [
-                          Text(comment.userName),
-                          Text(comment.text),
-                        ],
-                      );
+                      return CommentTile(comment: comment);
                     });
               }
-            }
-            if (state is PostsLoading) {
+              return Center(child: Text('No comments available'));
+            } else if (state is PostsLoading) {
               return const CircularProgressIndicator();
             } else if (state is PostsError) {
               return Center(
