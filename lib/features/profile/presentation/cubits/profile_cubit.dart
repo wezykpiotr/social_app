@@ -34,7 +34,7 @@ class ProfileCubit extends Cubit<ProfileStates> {
     }
   }
 
-  Future<ProfileUser?> getUserProfile(String uid) async  {
+  Future<ProfileUser?> getUserProfile(String uid) async {
     final user = await profileRepository.fetchUserProfile(uid);
     return user;
   }
@@ -86,6 +86,14 @@ class ProfileCubit extends Cubit<ProfileStates> {
           'Error updating profile: $e',
         ),
       );
+    }
+  }
+
+  Future<void> toggleFollow(String currentUserId, String targetUserId) async {
+    try {
+      await profileRepository.toggleFollow(currentUserId, targetUserId);
+    } catch (e) {
+      emit(ProfileError('Error toggling follow: $e'));
     }
   }
 }

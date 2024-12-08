@@ -7,9 +7,12 @@ import 'package:social_app/features/post/presentation/components/post_tile.dart'
 import 'package:social_app/features/post/presentation/cubits/post_cubit.dart';
 import 'package:social_app/features/post/presentation/cubits/post_states.dart';
 import 'package:social_app/features/profile/presentation/components/bio_box.dart';
+import 'package:social_app/features/profile/presentation/components/follow_button.dart';
+import 'package:social_app/features/profile/presentation/components/profile_stats.dart';
 import 'package:social_app/features/profile/presentation/cubits/profile_cubit.dart';
 import 'package:social_app/features/profile/presentation/cubits/profile_states.dart';
 import 'package:social_app/features/profile/presentation/pages/edit_profile_page.dart';
+import 'package:social_app/features/profile/presentation/pages/follower_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final String uid;
@@ -30,8 +33,36 @@ class _ProfilePageState extends State<ProfilePage> {
     profileCubit.fetchUserProfile(widget.uid);
   }
 
+  void followButtonPressed() {
+    final profileState = profileCubit.state;
+    if (profileState is! ProfileLoaded) {
+      return;
+    }
+    final profileUser = profileState.profileUser;
+    final isFollowing = profileUser.followers.contains(currentUser!.uid);
+
+    setState(() {
+      if (isFollowing) {
+        profileUser.followers.remove(currentUser!.uid);
+      } else {
+        profileUser.followers.add(currentUser!.uid);
+      }
+    });
+
+    profileCubit.toggleFollow(currentUser!.uid, widget.uid).catchError((error) {
+      setState(() {
+        if (isFollowing) {
+          profileUser.followers.add(currentUser!.uid);
+        } else {
+          profileUser.followers.remove(currentUser!.uid);
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool isOwnPost = widget.uid == currentUser!.uid;
     return BlocBuilder<ProfileCubit, ProfileStates>(
       builder: (context, state) {
         if (state is ProfileLoaded) {
@@ -44,15 +75,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 (user.name),
               ),
               actions: [
-                IconButton(
-                    onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditProfilePage(
-                            user: user,
-                          ),
-                        )),
-                    icon: const Icon(Icons.settings))
+                if (isOwnPost)
+                  IconButton(
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditProfilePage(
+                              user: user,
+                            ),
+                          )),
+                      icon: const Icon(Icons.settings))
               ],
             ),
             body: ListView(
@@ -88,6 +120,30 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
+                const SizedBox(
+                  height: 25,
+                ),
+                ProfileStats(
+                  postCount: postCount,
+                  followerCount: user.followers.length,
+                  followingCount: user.following.length,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FollowerPage(
+                        followers: user.followers,
+                        following: user.following,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                if (!isOwnPost)
+                  FollowButton(
+                      onPressed: followButtonPressed,
+                      isFollowing: user.followers.contains(currentUser!.uid)),
                 const SizedBox(
                   height: 25,
                 ),
