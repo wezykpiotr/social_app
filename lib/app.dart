@@ -9,6 +9,8 @@ import 'package:social_app/features/post/data/repository/firebase_post_repositor
 import 'package:social_app/features/post/presentation/cubits/post_cubit.dart';
 import 'package:social_app/features/profile/data/repository/firebase_profile_repository.dart';
 import 'package:social_app/features/profile/presentation/cubits/profile_cubit.dart';
+import 'package:social_app/features/search/data/firebase_search_repository.dart';
+import 'package:social_app/features/search/presentation/cubits/search_cubit.dart';
 import 'package:social_app/features/storage/data/firebase_storage_repository.dart';
 import 'package:social_app/themes/light_mode.dart';
 
@@ -19,6 +21,7 @@ class MyApp extends StatelessWidget {
   final firebaseProfileRepository = FirebaseProfileRepository();
   final firebaseStorageRepository = FirebaseStorageRepository();
   final firebasePostRepository = FirebasePostRepository();
+  final firebaseSearchRepository = FirebaseSearchRepository();
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -38,6 +41,11 @@ class MyApp extends StatelessWidget {
           create: (context) => PostCubit(
             postRepository: firebasePostRepository,
             storageRepository: firebaseStorageRepository,
+          ),
+        ),
+        BlocProvider<SearchCubit>(
+          create: (context) => SearchCubit(
+            searchRepository: firebaseSearchRepository,
           ),
         ),
       ],

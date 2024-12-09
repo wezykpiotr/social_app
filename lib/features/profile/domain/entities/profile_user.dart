@@ -53,10 +53,10 @@ class ProfileUser extends AppUser {
         bio: json['bio'] ?? '',
         profileImageUrl: json['profileImageUrl'] ?? '',
         followers: List<String>.from(
-          json['followers'] ?? '',
+          json['followers'] ?? [],
         ),
         following: List<String>.from(
-          json['following'] ?? '',
+          json['following'] ?? [],
         ));
   }
 }
