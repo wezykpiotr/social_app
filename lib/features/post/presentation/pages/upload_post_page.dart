@@ -10,6 +10,7 @@ import 'package:social_app/features/authentication/presentation/cubits/auth_cubi
 import 'package:social_app/features/post/domain/entities/post.dart';
 import 'package:social_app/features/post/presentation/cubits/post_cubit.dart';
 import 'package:social_app/features/post/presentation/cubits/post_states.dart';
+import 'package:social_app/responsive/constrained_scaffold.dart';
 
 class UploadPostPage extends StatefulWidget {
   const UploadPostPage({super.key});
@@ -89,7 +90,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<PostCubit, PostStates>(builder: (context, state) {
       if (state is PostsLoading || state is PostsUploading) {
-        return Scaffold(
+        return ConstrainedScaffold(
           body: Center(
             child: CircularProgressIndicator(),
           ),
@@ -104,7 +105,7 @@ class _UploadPostPageState extends State<UploadPostPage> {
   }
 
   Widget buildUploadPage() {
-    return Scaffold(
+    return ConstrainedScaffold(
       appBar: AppBar(
         title: const Text('Create post'),
         foregroundColor: Theme.of(context).colorScheme.primary,

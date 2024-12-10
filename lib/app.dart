@@ -12,6 +12,7 @@ import 'package:social_app/features/profile/presentation/cubits/profile_cubit.da
 import 'package:social_app/features/search/data/firebase_search_repository.dart';
 import 'package:social_app/features/search/presentation/cubits/search_cubit.dart';
 import 'package:social_app/features/storage/data/firebase_storage_repository.dart';
+import 'package:social_app/responsive/constrained_scaffold.dart';
 import 'package:social_app/themes/light_mode.dart';
 
 class MyApp extends StatelessWidget {
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
             } else if (authState is Authenticated) {
               return const HomePage();
             } else {
-              return const Scaffold(
+              return const ConstrainedScaffold(
                 body: Center(
                   child: CircularProgressIndicator(),
                 ),

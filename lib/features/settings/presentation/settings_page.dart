@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_app/responsive/constrained_scaffold.dart';
 import 'package:social_app/themes/theme_cubit.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -10,7 +11,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeCubit = context.watch<ThemeCubit>();
     bool isDarkMode = themeCubit.isDarkMode;
-    return Scaffold(
+    return ConstrainedScaffold(
       appBar: AppBar(
         title: Text('Settings'),
       ),
