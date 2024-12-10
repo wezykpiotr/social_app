@@ -88,6 +88,8 @@ class FirebaseProfileRepository implements ProfileRepository {
           }
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 }

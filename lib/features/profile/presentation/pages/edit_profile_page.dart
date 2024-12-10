@@ -9,6 +9,7 @@ import 'package:social_app/features/authentication/presentation/components/my_te
 import 'package:social_app/features/profile/domain/entities/profile_user.dart';
 import 'package:social_app/features/profile/presentation/cubits/profile_cubit.dart';
 import 'package:social_app/features/profile/presentation/cubits/profile_states.dart';
+import 'package:social_app/responsive/constrained_scaffold.dart';
 
 class EditProfilePage extends StatefulWidget {
   final ProfileUser user;
@@ -60,7 +61,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return BlocConsumer<ProfileCubit, ProfileStates>(
       builder: (context, state) {
         if (state is ProfileLoading) {
-          return const Scaffold(
+          return const ConstrainedScaffold(
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -84,7 +85,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Widget buildEditPage() {
-    return Scaffold(
+    return ConstrainedScaffold(
       appBar: AppBar(
         title: const Text(
           'Edit Profile',
